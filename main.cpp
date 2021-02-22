@@ -3,77 +3,88 @@
 #include <vector>
 
 using namespace std;
-
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
-class ciagi{
-	public:
-		fstream plik;
-		ofstream plik2;
-		vector<int> szesciany;
+class file {
+	protected:
+		ifstream input;
+ 		ofstream output;
+ 		
+ 		vector<string> s1;
+ 		string s;
+ 		int howMuch = 0;
 		
-		ciagi();
-		~ciagi();
-		void wczytajLiczby();
-		int w();
+		file();
+		~file();
 		
-	private:
+		void pobierz();
 };
 
-ciagi::ciagi(){
-	if(plik.good()) {
-		plik.open("c:\\bledne.txt", ios::in);  
-		plik2.open("c:\\od.txt");
-	}
-	else
-		cout<<"Cos poszlo nie tak przy otwieraniu pliku.";
-};
-
-ciagi::~ciagi(){
-	plik.close();  
-	plik2.close();
+file::file() {
+	input.open("c:\\dane_obrazki.txt");
+ 	output.open("wyjscie.txt");
 }
 
-void ciagi::wczytajLiczby()
-{
-	int r;
-	int r2;
-	
-	while(!plik.eof())  
-    {
-    	int dlugosc;
-    	int liczba;
-	    for(int q = 0; q < 21; q++)
-	    {
-	    	szesciany.clear(); 
-	    	
-	        plik >> dlugosc;
-	        for(int i = 0; i < dlugosc; i++)
-	        {
-	        	plik >> liczba;
-				szesciany.push_back(liczba);
-			}
-			
-			r = szesciany[1] - szesciany[0];
-			r2 = szesciany[2] - szesciany[1];
-			
-			if (r != r2) {
-				r = szesciany[3] - szesciany[2];
-			}
+file::~file() {
+	input.close();
+ 	output.close();
+}
 
-			for (int i = 0; i < dlugosc; i++) {
-				if (szesciany[i+1] - szesciany[i] != r) {
-					plik2<<szesciany[i]<<"\n";
+void file::pobierz() {
+	input>>s;
+}
+
+class zadanie64_2 :public file{
+	public:
+		void symmetry();
+};
+
+void zadanie64_2::symmetry(){
+	bool isRewersY = true;
+	bool isRewersX = true;
+	
+	
+	while(!input.eof()){		
+		this->pobierz();	//pobranie kolejnego
+		
+		if (s.length() == 21) {		//sprawdznie czy nie jest ostatnim wierszem
+			s1.push_back(s);
+			
+			for( int i = 0; i < 10; i++ ) {		//sprawdzenie symertii kazdej linii 
+				if (s[i] != s[i+10]) {
+					isRewersX = false;
+					break;
+				}	
+			}
+		} 
+		else {
+			for( int i = 0; i < 10; i++ ) {		//sprawdzenie symetrii gora dol
+				if (s1[i] != s1[i+10]) {
+					isRewersY = false;
 					break;
 				}
 			}
-	    }            
-    }
+			
+			if (isRewersY && isRewersX) {	//podsumowanie 
+				howMuch++;
+				for( int i = 0; i < s1.size(); i++ ) {
+					cout<<s1[i]<<endl;
+				}
+				cout<<endl;
+			}
+			
+			isRewersY = true;	//restart
+			isRewersX = true;
+			s1.clear();
+		}
+	}
+	
+	cout<<"Wszystkich: "<<howMuch; 
 }
 
 int main(int argc, char** argv) {
-	ciagi b;
-	
-	b.wczytajLiczby();
+	zadanie64_2 l;
+	l.symmetry();
+		
 	return 0;
 }
