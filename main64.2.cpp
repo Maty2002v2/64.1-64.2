@@ -67,7 +67,7 @@ void zadanie64_2::symmetry(){
 			
 			if (isRewersY && isRewersX) {	//podsumowanie 
 				howMuch++;
-				for( int i = 0; i < s1.size(); i++ ) {
+				for( int i = 0; i < s1.size()-1; i++ ) {
 					cout<<s1[i]<<endl;
 				}
 				cout<<endl;
